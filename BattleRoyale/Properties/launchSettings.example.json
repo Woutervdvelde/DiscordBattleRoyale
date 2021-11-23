@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BattleRoyale": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "token": "DISCORD BOT TOKEN"
+      }
+    }
+  }
+}
