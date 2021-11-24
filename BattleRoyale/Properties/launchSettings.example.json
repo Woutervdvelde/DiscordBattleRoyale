@@ -3,7 +3,8 @@
     "BattleRoyale": {
       "commandName": "Project",
       "environmentVariables": {
-        "token": "DISCORD BOT TOKEN"
+        "token": "DISCORD BOT TOKEN",
+        "prefix": "!"
       }
     }
   }

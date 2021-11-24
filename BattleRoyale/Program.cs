@@ -1,5 +1,7 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 
@@ -14,13 +16,20 @@ namespace BattleRoyale
 
 		public async Task MainAsync()
 		{
-			_client = new DiscordSocketClient();
-			_client.Log += Log;
+			using (var services = ConfigureServices())
+            {
+				var client = services.GetRequiredService<DiscordSocketClient>();
+				client.Log += Log;
+				services.GetRequiredService<CommandService>().Log += Log;
 
-			await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
-			await _client.StartAsync();
+				await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("token"));
+				await client.StartAsync();
 
-			await Task.Delay(-1);
+				await services.GetRequiredService<CommandHandler>().InitializeAsync();
+
+				await Task.Delay(-1);
+
+			}
 		}
 
 		private Task Log(LogMessage msg)
@@ -28,5 +37,14 @@ namespace BattleRoyale
 			Console.WriteLine(msg.ToString());
 			return Task.CompletedTask;
 		}
+
+		private ServiceProvider ConfigureServices()
+        {
+			return new ServiceCollection()
+				.AddSingleton<DiscordSocketClient>()
+				.AddSingleton<CommandService>()
+				.AddSingleton<CommandHandler>()
+				.BuildServiceProvider();
+        }
 	}
 }
