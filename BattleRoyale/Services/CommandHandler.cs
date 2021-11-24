@@ -46,7 +46,7 @@ namespace BattleRoyale
 
             var context = new SocketCommandContext(_client, message);
 
-            await _commands.ExecuteAsync(context, argPos, null);
+            await _commands.ExecuteAsync(context, argPos, _services);
         }
 
         public async Task OnCommandExecuted(Optional<CommandInfo> command, ICommandContext context, IResult result)
