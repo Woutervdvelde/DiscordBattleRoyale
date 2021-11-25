@@ -26,6 +26,7 @@ namespace BattleRoyale
 
             _commands.CommandExecuted += OnCommandExecuted;
             _client.MessageReceived += OnMessageReceived;
+            _client.ThreadCreated += OnThreadCreated;
         }
 
         public async Task InitializeAsync()
@@ -55,6 +56,11 @@ namespace BattleRoyale
             if (result.IsSuccess) return;
 
             await context.Channel.SendMessageAsync($"error: {result}");
+        }
+
+        public async Task OnThreadCreated(SocketThreadChannel thread)
+        {
+
         }
     }
 }

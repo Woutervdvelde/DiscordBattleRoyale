@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using BattleRoyale.Services;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ namespace BattleRoyale
 				await client.StartAsync();
 
 				await services.GetRequiredService<CommandHandler>().InitializeAsync();
+				await services.GetRequiredService<ThreadHandler>().InitializeAsync();
 
 				await Task.Delay(-1);
 
@@ -44,6 +46,7 @@ namespace BattleRoyale
 				.AddSingleton<DiscordSocketClient>()
 				.AddSingleton<CommandService>()
 				.AddSingleton<CommandHandler>()
+				.AddSingleton<ThreadHandler>()
 				.BuildServiceProvider();
         }
 	}
