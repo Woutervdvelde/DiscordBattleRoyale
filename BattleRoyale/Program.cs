@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Controller;
 
 namespace BattleRoyale
 {
@@ -28,9 +29,9 @@ namespace BattleRoyale
 
 				await services.GetRequiredService<CommandHandler>().InitializeAsync();
 				services.GetRequiredService<ThreadHandler>().Initialize();
+				GameController.Initialize(int.Parse(Environment.GetEnvironmentVariable("maxAllowedGamesInGuild")));
 
 				await Task.Delay(-1);
-
 			}
 		}
 

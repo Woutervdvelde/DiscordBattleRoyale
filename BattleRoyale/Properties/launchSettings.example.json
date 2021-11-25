@@ -4,7 +4,8 @@
       "commandName": "Project",
       "environmentVariables": {
         "token": "DISCORD BOT TOKEN",
-        "prefix": "!"
+        "prefix": "!",
+        "maxAllowedGamesInGuild": "1"
       }
     }
   }
