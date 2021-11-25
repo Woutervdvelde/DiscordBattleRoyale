@@ -12,18 +12,17 @@ namespace BattleRoyale.Modules
     {
         public ThreadHandler ThreadHandler { get; set; }
 
+        //This is a test module for creating threads
         [Command("thread")]
         [Alias("t")]
         [Summary("Creates a thread")]
         public async Task ThreadAsync()
         {
             SocketTextChannel ch = Context.Channel as SocketTextChannel;
-            SocketThreadChannel thread = await ThreadHandler.CreateNewThread(ch, Context.User);
-
-            //ch.CreateThreadAsync("test"); //this works fine.
-            //await ch.CreateThreadAsync("test"); //this works but 
-
-
+            string threadName = GenerateThreadName(Context.User);
+            SocketThreadChannel thread = await ThreadHandler.CreateNewThread(ch, threadName);
+            await thread.JoinAsync();
+            await thread.SendMessageAsync("Welcome everyone!");
             //SocketThreadChannel thread = await ch.CreateThreadAsync("test");
             
             //
@@ -31,6 +30,11 @@ namespace BattleRoyale.Modules
             //await thread.JoinAsync();
             //await thread.SendMessageAsync("Welcome");
             //await ReplyAsync("meow");
+        }
+
+        private string GenerateThreadName(SocketUser user)
+        {
+            return $"{user.Username.Normalize()}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
         }
     }
 }

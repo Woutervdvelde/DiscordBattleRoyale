@@ -27,7 +27,7 @@ namespace BattleRoyale
 				await client.StartAsync();
 
 				await services.GetRequiredService<CommandHandler>().InitializeAsync();
-				await services.GetRequiredService<ThreadHandler>().InitializeAsync();
+				services.GetRequiredService<ThreadHandler>().Initialize();
 
 				await Task.Delay(-1);
 

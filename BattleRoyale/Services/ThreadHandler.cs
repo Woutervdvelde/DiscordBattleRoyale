@@ -23,25 +23,49 @@ namespace BattleRoyale.Services
             _client.ThreadCreated += OnThreadCreated;
         }
 
-        public async Task InitializeAsync()
+        public void Initialize()
         {
             //TODO better initialization?
             //just initializing it to recognize the constructor at this point...
         }
 
-        public async Task<SocketThreadChannel> CreateNewThread(SocketTextChannel channel, SocketUser user)
+        /// <summary>
+        /// Creates a new <see cref="SocketThreadChannel"/> in a desired <see cref="SocketTextChannel"/>
+        /// </summary>
+        /// <param name="channel">channel the thread will be created in</param>
+        /// <param name="name">name of the thread</param>
+        /// <returns></returns>
+        public async Task<SocketThreadChannel> CreateNewThread(SocketTextChannel channel, string name)
         {
-            string threadName = GenerateThreadName(user);
-            _ = channel.CreateThreadAsync(threadName);
-            await Task.Delay(1000);
-            SocketThreadChannel thread = channel.Threads.Where(t => t.Name == threadName).First();
-
+            _ = channel.CreateThreadAsync(name);
+            SocketThreadChannel thread = await GetThread(channel, name, 10);
             return thread;
         }
 
-        private string GenerateThreadName(SocketUser user)
+        /// <summary>
+        /// This will try to retrieve a <see cref="SocketThreadChannel"/> by name. <br/>
+        /// It will wait 250ms before each attempt since it takes time to create a thread.
+        /// </summary>
+        /// <param name="channel">channel that needs to be searched for threads</param>
+        /// <param name="name">Name of the desired thread</param>
+        /// <param name="retryCount">Amount of retries</param>
+        /// <returns></returns>
+        private async Task<SocketThreadChannel> GetThread(SocketTextChannel channel, string name, int retryCount)
         {
-            return $"{user.Username}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
+            SocketThreadChannel thread = null;
+            int retries = 0;
+
+            while (thread == null && retries < retryCount)
+            {
+                await Task.Delay(250);
+                var result = channel.Threads.Where(t => t.Name == name);
+                if (result.Any())
+                    thread = result.First();
+
+                retries++;
+            }
+
+            return thread;
         }
 
         public async Task OnThreadCreated(SocketThreadChannel thread)
