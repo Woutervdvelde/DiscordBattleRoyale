@@ -15,14 +15,14 @@ namespace BattleRoyale
         private readonly CommandService _commands;
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _services;
-        private readonly char _prefix;
+        private readonly string _prefix;
 
         public CommandHandler(IServiceProvider services)
         {
             _commands = services.GetRequiredService<CommandService>();
             _client = services.GetRequiredService<DiscordSocketClient>();
             _services = services;
-            _prefix = Environment.GetEnvironmentVariable("prefix")[0];
+            _prefix = Environment.GetEnvironmentVariable("prefix");
 
             _commands.CommandExecuted += OnCommandExecuted;
             _client.MessageReceived += OnMessageReceived;
@@ -39,7 +39,7 @@ namespace BattleRoyale
             if (message == null) return;
 
             int argPos = 0;
-            if (!(message.HasCharPrefix(_prefix, ref argPos) ||
+            if (!(message.HasStringPrefix(_prefix, ref argPos) ||
                 message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
                 message.Author.IsBot)
                 return;
