@@ -23,13 +23,6 @@ namespace BattleRoyale.Modules
             SocketThreadChannel thread = await ThreadHandler.CreateNewThread(ch, threadName);
             await thread.JoinAsync();
             await thread.SendMessageAsync("Welcome everyone!");
-            //SocketThreadChannel thread = await ch.CreateThreadAsync("test");
-            
-            //
-            //Console.WriteLine(thread);
-            //await thread.JoinAsync();
-            //await thread.SendMessageAsync("Welcome");
-            //await ReplyAsync("meow");
         }
 
         private string GenerateThreadName(SocketUser user)
