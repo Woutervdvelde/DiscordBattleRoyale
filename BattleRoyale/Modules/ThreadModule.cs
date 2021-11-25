@@ -18,7 +18,8 @@ namespace BattleRoyale.Modules
         public async Task ThreadAsync()
         {
             SocketTextChannel ch = Context.Channel as SocketTextChannel;
-            await ThreadHandler.CreateNewThread(ch);
+            SocketThreadChannel thread = await ThreadHandler.CreateNewThread(ch, Context.User);
+
             //ch.CreateThreadAsync("test"); //this works fine.
             //await ch.CreateThreadAsync("test"); //this works but 
 

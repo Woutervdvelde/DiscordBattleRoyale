@@ -29,10 +29,19 @@ namespace BattleRoyale.Services
             //just initializing it to recognize the constructor at this point...
         }
 
-        public async Task CreateNewThread(SocketTextChannel channel)
+        public async Task<SocketThreadChannel> CreateNewThread(SocketTextChannel channel, SocketUser user)
         {
-            channel.CreateThreadAsync("test"); //creates thread, doesn't throw error
-            await channel.CreateThreadAsync("test"); //creates thread, does throw error
+            string threadName = GenerateThreadName(user);
+            _ = channel.CreateThreadAsync(threadName);
+            await Task.Delay(1000);
+            SocketThreadChannel thread = channel.Threads.Where(t => t.Name == threadName).First();
+
+            return thread;
+        }
+
+        private string GenerateThreadName(SocketUser user)
+        {
+            return $"{user.Username}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
         }
 
         public async Task OnThreadCreated(SocketThreadChannel thread)
