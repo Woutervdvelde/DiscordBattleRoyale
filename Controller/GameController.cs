@@ -11,6 +11,7 @@ namespace Controller
     {
         private static int _maxAllowedGamesInGuild;
         private static Dictionary<SocketThreadChannel, Game> _games { get; set; }
+
         public static void Initialize(int maxAllowedGamesInGuild)
         {
             _maxAllowedGamesInGuild = maxAllowedGamesInGuild;
@@ -33,6 +34,22 @@ namespace Controller
             //        if (_games.Keys.Contains(t))
             //            runningGames++;
             return runningGames < _maxAllowedGamesInGuild;
+        }
+
+        public static bool CheckThread(SocketThreadChannel thread)
+        {
+            return _games.Keys.Contains(thread);
+        }
+
+        /// <summary>
+        /// Creates a unique game name based on time.
+        /// This way the <see cref="ThreadHandler.GetThread"/> can retrieve the thread.
+        /// </summary>
+        /// <param name="user">User that creates the game</param>
+        /// <returns></returns>
+        public static string GenerateThreadName(SocketUser user)
+        {
+            return $"{user.Username.Normalize()}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
         }
     }
 }

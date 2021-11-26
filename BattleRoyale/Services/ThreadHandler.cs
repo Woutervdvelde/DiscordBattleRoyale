@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using Controller;
 
 namespace BattleRoyale.Services
 {
@@ -21,6 +22,7 @@ namespace BattleRoyale.Services
             _services = services;
 
             _client.ThreadCreated += OnThreadCreated;
+            _client.ThreadMemberJoined += OnThreadJoined;
         }
 
         public void Initialize()
@@ -71,6 +73,12 @@ namespace BattleRoyale.Services
         public async Task OnThreadCreated(SocketThreadChannel thread)
         {
 
+        }
+
+        public async Task OnThreadJoined(SocketThreadUser user)
+        {
+            //if (!GameController.CheckThread(user.Thread)) return;
+            await user.Thread.SendMessageAsync($"Welcome {user.Username}!");
         }
     }
 }

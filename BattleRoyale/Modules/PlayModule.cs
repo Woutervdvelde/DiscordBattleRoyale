@@ -25,7 +25,15 @@ namespace BattleRoyale.Modules
                 await ReplyAsync("There are too many games running in this server");
                 return;
             }
-            else await ReplyAsync("Game can be created!");
+
+            string threadName = GameController.GenerateThreadName(Context.User);
+            SocketThreadChannel thread = await ThreadHandler.CreateNewThread(channel, threadName);
+            if (thread == null)
+            {
+                await ReplyAsync("There was a problem creating the game");
+                return;
+            }
+
         }
     }
 }
