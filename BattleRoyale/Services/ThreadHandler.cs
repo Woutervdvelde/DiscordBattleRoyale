@@ -71,6 +71,13 @@ namespace BattleRoyale.Services
             return thread;
         }
 
+        public async Task RemoveAllThreadsInChannel(SocketTextChannel channel)
+        {
+            if (channel != null)
+                foreach (SocketThreadChannel t in channel.Threads)
+                    await t.DeleteAsync();
+        }
+
         public async Task OnThreadCreated(SocketThreadChannel thread)
         {
 

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace BattleRoyale.Modules
 {
+    [RequireUserPermission(Discord.GuildPermission.Administrator)]
     public class ThreadModule : ModuleBase<SocketCommandContext>
     {
         public ThreadHandler ThreadHandler { get; set; }
@@ -19,16 +20,16 @@ namespace BattleRoyale.Modules
         public async Task ThreadAsync()
         {
             SocketTextChannel ch = Context.Channel as SocketTextChannel;
-            string threadName = GenerateThreadName(Context.User);
+            string threadName = "test";
             SocketThreadChannel thread = await ThreadHandler.CreateNewThread(ch, threadName);
 
             await thread.JoinAsync();
             await thread.SendMessageAsync("Welcome everyone!");
         }
 
-        private string GenerateThreadName(SocketUser user)
-        {
-            return $"{user.Username.Normalize()}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
-        }
+        [Command("rm_t")]
+        [Alias("rt")]
+        [Summary("Deletes all threads in SocketTextChannel")]
+        public async Task RemoveThreads() => await ThreadHandler.RemoveAllThreadsInChannel((SocketTextChannel)Context.Channel);
     }
 }
