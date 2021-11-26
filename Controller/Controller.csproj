@@ -8,4 +8,8 @@
     <PackageReference Include="Discord.Net.Labs" Version="3.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
 </Project>

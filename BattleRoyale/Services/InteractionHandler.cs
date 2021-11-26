@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Controller;
+using Discord;
 
 namespace BattleRoyale.Services
 {
@@ -31,6 +32,21 @@ namespace BattleRoyale.Services
         {
             await component.DeferAsync();
             await GameController.ParseInteraction(component);
+        }
+
+        public List<SelectMenuOptionBuilder> ConvertEnumToSelectMenuOptions<K>(Dictionary<K, string> descriptions)
+        {
+            List<SelectMenuOptionBuilder> options = new List<SelectMenuOptionBuilder>();
+            foreach (string value in Enum.GetNames(typeof(K))) {
+                descriptions.TryGetValue((K)Enum.Parse(typeof(K), value), out string description);
+                options.Add(new SelectMenuOptionBuilder() { 
+                    Label = value,
+                    Value = value,
+                    Description = description
+                });
+            } ;
+
+            return options;
         }
     }
 }

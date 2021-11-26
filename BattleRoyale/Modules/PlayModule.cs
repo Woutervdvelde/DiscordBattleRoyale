@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 using Controller;
 using Discord.WebSocket;
 using Discord.Rest;
+using Model;
 
 namespace BattleRoyale.Modules
 {
     public class PlayModule : ModuleBase<SocketCommandContext>
     {
         public ThreadHandler ThreadHandler { get; set; }
+        public InteractionHandler InteractionHandler { get; set; }
 
         [Command("play")]
         [Summary("Creates a new battle royale")]
@@ -43,6 +45,15 @@ namespace BattleRoyale.Modules
             RestUserMessage message = await channel.SendMessageAsync($"Click on the button to join {Context.User.Username}'s game", component: builder.Build());
 
             GameController.CreateGame(game, thread, message);
+
+            var optionBuilder = new Discord.ComponentBuilder()
+                .WithSelectMenu(
+                    customId: $"invite_{game.UniqueId}",
+                    options: InteractionHandler.ConvertEnumToSelectMenuOptions<GamePlayerNameOptions>(GamePlayerOptions.GamePlayerNameDescriptions),
+                    minValues: 1,
+                    maxValues: 1
+                );
+            await channel.SendMessageAsync("Creator options:", component: optionBuilder.Build());
         }
     }
 }
