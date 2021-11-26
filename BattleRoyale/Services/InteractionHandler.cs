@@ -30,6 +30,7 @@ namespace BattleRoyale.Services
         private async Task OnButtonExecuted(SocketMessageComponent component)
         {
             await component.DeferAsync();
+            await GameController.ParseInteraction(component);
         }
     }
 }

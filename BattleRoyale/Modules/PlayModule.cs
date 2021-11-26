@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Controller;
 using Discord.WebSocket;
+using Discord.Rest;
 
 namespace BattleRoyale.Modules
 {
@@ -25,9 +26,9 @@ namespace BattleRoyale.Modules
                 await ReplyAsync("There are too many games running in this server");
                 return;
             }
+            Game game = new Game(Context.User);
 
-            string threadName = GameController.GenerateThreadName(Context.User);
-            SocketThreadChannel thread = await ThreadHandler.CreateNewThread(channel, threadName);
+            SocketThreadChannel thread = await ThreadHandler.CreateNewThread(channel, game.UniqueId);
             if (thread == null)
             {
                 await ReplyAsync("There was a problem creating the game");
@@ -37,10 +38,11 @@ namespace BattleRoyale.Modules
             await thread.SendMessageAsync($"Waiting for {Context.User.Username} to start the game.");
 
             var builder = new Discord.ComponentBuilder()
-                .WithButton("Join game", $"button_{thread.Name}");
-            
-            await channel.SendMessageAsync($"Click on the button to join {Context.User.Username}'s game", component: builder.Build());
+                .WithButton("Join game", $"invite_{game.UniqueId}");
 
+            RestUserMessage message = await channel.SendMessageAsync($"Click on the button to join {Context.User.Username}'s game", component: builder.Build());
+
+            GameController.CreateGame(game, thread, message);
         }
     }
 }

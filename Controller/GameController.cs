@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord.Rest;
+using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,12 @@ namespace Controller
     public static class GameController
     {
         private static int _maxAllowedGamesInGuild;
-        private static Dictionary<SocketThreadChannel, Game> _games { get; set; }
+        private static Dictionary<string, Game> _games { get; set; }
 
         public static void Initialize(int maxAllowedGamesInGuild)
         {
             _maxAllowedGamesInGuild = maxAllowedGamesInGuild;
-            _games = new Dictionary<SocketThreadChannel, Game>();
+            _games = new Dictionary<string, Game>();
         }
 
         /// <summary>
@@ -28,28 +29,34 @@ namespace Controller
         /// </returns>
         public static bool CheckAvailability(SocketGuild guild)
         {
-            int runningGames = (guild.TextChannels.SelectMany(ch => ch.Threads.Where(t => _games.Keys.Contains(t)).Select(t => ch))).Count();
-            //foreach (SocketTextChannel ch in guild.TextChannels)
-            //    foreach (SocketThreadChannel t in ch.Threads)
-            //        if (_games.Keys.Contains(t))
-            //            runningGames++;
+            int runningGames = (_games.Where(g => g.Value.Thread.Guild.Id == guild.Id)).Count();
             return runningGames < _maxAllowedGamesInGuild;
         }
 
-        public static bool CheckThread(SocketThreadChannel thread)
+        public static void CreateGame(Game game, SocketThreadChannel thread, RestUserMessage message)
         {
-            return _games.Keys.Contains(thread);
+            game.Thread = thread;
+            game.InviteMessage = message;
+            _games.Add(game.UniqueId, game);
         }
 
-        /// <summary>
-        /// Creates a unique game name based on time.
-        /// This way the <see cref="ThreadHandler.GetThread"/> can retrieve the thread.
-        /// </summary>
-        /// <param name="user">User that creates the game</param>
-        /// <returns></returns>
-        public static string GenerateThreadName(SocketUser user)
+
+        public static async Task ParseInteraction(SocketMessageComponent component)
         {
-            return $"{user.Username.Normalize()}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
+            switch(component.Data.CustomId)
+            {
+                case string s when s.StartsWith("invite_"):
+                    await JoinGame(s[7..], component.User);
+                    break;
+            }
         }
+
+        private static async Task JoinGame(string id, SocketUser u)
+        {
+            if (u is not SocketGuildUser user) return;
+            if (_games.TryGetValue(id, out Game game))
+                await game.Join(user);
+        }
+
     }
 }
