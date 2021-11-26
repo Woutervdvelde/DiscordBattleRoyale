@@ -25,10 +25,11 @@ namespace BattleRoyale.Services
             _client.ThreadMemberJoined += OnThreadJoined;
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             //TODO better initialization?
             //just initializing it to recognize the constructor at this point...
+            return;
         }
 
         /// <summary>
@@ -77,8 +78,10 @@ namespace BattleRoyale.Services
 
         public async Task OnThreadJoined(SocketThreadUser user)
         {
+            //Doesn't fire?
+
             //if (!GameController.CheckThread(user.Thread)) return;
-            await user.Thread.SendMessageAsync($"Welcome {user.Username}!");
+            //await user.Thread.SendMessageAsync($"Welcome {user.Username}!");
         }
     }
 }

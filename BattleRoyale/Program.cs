@@ -28,7 +28,8 @@ namespace BattleRoyale
 				await client.StartAsync();
 
 				await services.GetRequiredService<CommandHandler>().InitializeAsync();
-				services.GetRequiredService<ThreadHandler>().Initialize();
+				await services.GetRequiredService<ThreadHandler>().InitializeAsync();
+				await services.GetRequiredService<InteractionHandler>().InitializeAsync();
 				GameController.Initialize(int.Parse(Environment.GetEnvironmentVariable("maxAllowedGamesInGuild")));
 
 				await Task.Delay(-1);
@@ -48,6 +49,7 @@ namespace BattleRoyale
 				.AddSingleton<CommandService>()
 				.AddSingleton<CommandHandler>()
 				.AddSingleton<ThreadHandler>()
+				.AddSingleton<InteractionHandler>()
 				.BuildServiceProvider();
         }
 	}

@@ -21,6 +21,7 @@ namespace BattleRoyale.Modules
             SocketTextChannel ch = Context.Channel as SocketTextChannel;
             string threadName = GenerateThreadName(Context.User);
             SocketThreadChannel thread = await ThreadHandler.CreateNewThread(ch, threadName);
+
             await thread.JoinAsync();
             await thread.SendMessageAsync("Welcome everyone!");
         }

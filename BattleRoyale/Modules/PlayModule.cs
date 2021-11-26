@@ -33,6 +33,13 @@ namespace BattleRoyale.Modules
                 await ReplyAsync("There was a problem creating the game");
                 return;
             }
+            await thread.JoinAsync();
+            await thread.SendMessageAsync($"Waiting for {Context.User.Username} to start the game.");
+
+            var builder = new Discord.ComponentBuilder()
+                .WithButton("Join game", $"button_{thread.Name}");
+            
+            await channel.SendMessageAsync($"Click on the button to join {Context.User.Username}'s game", component: builder.Build());
 
         }
     }
