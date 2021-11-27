@@ -32,40 +32,30 @@ namespace BattleRoyale.Modules
             if (thread == null) return;
 
 
-            var creatorBuilder = new ActionRowBuilder()
-                .AddComponent(new ButtonBuilder("Start", $"start_{game.UniqueId}").Build())
-                .AddComponent(new SelectMenuBuilder(
+            var settingsBuilder = new ComponentBuilder()
+                .WithButton("Start", $"start_{game.UniqueId}")
+                .WithButton("Cancel", $"cancel_{game.UniqueId}", ButtonStyle.Danger)
+                .WithSelectMenu(
                     $"naming_{game.UniqueId}",
                     InteractionHandler.ConvertEnumToSelectMenuOptions<GamePlayerNameOptions>(GamePlayerOptions.GamePlayerNameDescriptions),
                     "Naming",
                     1, 1
-                ).Build()
-            );
+                );
 
-            var builder = new ComponentBuilder() { ActionRows = new List<ActionRowBuilder>() { creatorBuilder } };
-
-            await channel.SendMessageAsync(
+            RestUserMessage settingsMessage = await channel.SendMessageAsync(
                 $"Only {Context.User.Username} can manage the game. \n you have access to the following controls",
-                component: builder.Build()
+                component: settingsBuilder.Build()
             );
-            //await channel.SendMessageAsync()
 
-            //var builder = new Discord.ComponentBuilder()
-            //    .WithButton("Join game", $"invite_{game.UniqueId}");
-            //
-            //RestUserMessage message = await channel.SendMessageAsync($"Click on the button to join {Context.User.Username}'s game", component: builder.Build());
-            //
-            //GameController.CreateGame(game, thread, message);
-            //
-            //var optionBuilder = new Discord.ComponentBuilder()
-            //    .WithSelectMenu(
-            //        customId: $"invite_{game.UniqueId}",
-            //        options: InteractionHandler.ConvertEnumToSelectMenuOptions<GamePlayerNameOptions>(GamePlayerOptions.GamePlayerNameDescriptions),
-            //        minValues: 1,
-            //        maxValues: 1
-            //    );
-            //
-            //await channel.SendMessageAsync("Creator options:", component: optionBuilder.Build());
+            var inviteBuilder = new Discord.ComponentBuilder()
+                .WithButton("Join game", $"invite_{game.UniqueId}");
+            
+            RestUserMessage inviteMessage = await channel.SendMessageAsync(
+                $"════════════════════════════════════════\n Click on the button to join {Context.User.Username}'s game",
+                component: inviteBuilder.Build()
+            );
+            
+            GameController.CreateGame(game, thread, settingsMessage, inviteMessage);
         }
 
         private async Task<BattleRoyaleGame> TryCreateGame(SocketCommandContext ctx)

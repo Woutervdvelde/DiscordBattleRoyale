@@ -17,6 +17,7 @@ namespace Controller
         private List<string> _suggestions { get; set; }
         
         protected internal SocketThreadChannel Thread { get; set; }
+        protected internal RestUserMessage SettingsMessage { get; set; }
         protected internal RestUserMessage InviteMessage { get; set; }
 
         public string UniqueId { get; private set; }
@@ -39,6 +40,11 @@ namespace Controller
             return $"{user.Normalize()}s Game ({DateTime.Now.ToString("yyyyMMddHHmmss")})";
         }
 
+        public bool IsCreator(SocketUser u)
+        {
+            return u.Id == u.Id;
+        }
+
         public async Task Join(SocketGuildUser user)
         {
             await Thread.AddUserAsync(user);
@@ -52,6 +58,13 @@ namespace Controller
         public async Task Start()
         {
             await InviteMessage.DeleteAsync();
+        }
+
+        public async Task Cancel()
+        {
+            await Thread.DeleteAsync();
+            await SettingsMessage?.DeleteAsync();
+            await InviteMessage?.DeleteAsync();
         }
     }
 }

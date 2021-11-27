@@ -33,10 +33,11 @@ namespace Controller
             return runningGames < _maxAllowedGamesInGuild;
         }
 
-        public static void CreateGame(Game game, SocketThreadChannel thread, RestUserMessage message)
+        public static void CreateGame(Game game, SocketThreadChannel thread, RestUserMessage settingsMessage, RestUserMessage inviteMessage)
         {
             game.Thread = thread;
-            game.InviteMessage = message;
+            game.SettingsMessage = settingsMessage;
+            game.InviteMessage = inviteMessage;
             _games.Add(game.UniqueId, game);
         }
 
@@ -47,6 +48,9 @@ namespace Controller
                 case string s when s.StartsWith("invite_"):
                     await JoinGame(s[7..], component.User);
                     break;
+                case string s when s.StartsWith("cancel_"):
+                    await CancelGame(s[7..], component.User);
+                    break;
             }
         }
 
@@ -55,6 +59,16 @@ namespace Controller
             if (u is not SocketGuildUser user) return;
             if (_games.TryGetValue(id, out Game game))
                 await game.Join(user);
+        }
+
+        private static async Task CancelGame(string id, SocketUser u)
+        {
+            if (_games.TryGetValue(id, out Game game))
+                if (game.IsCreator(u))
+                {
+                    await game.Cancel();
+                    _games.Remove(game.UniqueId);
+                }
         }
     }
 }
