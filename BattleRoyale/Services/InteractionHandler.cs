@@ -41,7 +41,7 @@ namespace BattleRoyale.Services
             await GameController.ParseInteraction(component);
         }
 
-        public List<SelectMenuOptionBuilder> ConvertEnumToSelectMenuOptions<K>(Dictionary<K, string> descriptions)
+        public List<SelectMenuOptionBuilder> ConvertEnumToSelectMenuOptions<K>(Dictionary<K, string> descriptions, string selected = null)
         {
             List<SelectMenuOptionBuilder> options = new List<SelectMenuOptionBuilder>();
             foreach (string value in Enum.GetNames(typeof(K))) {
@@ -49,8 +49,9 @@ namespace BattleRoyale.Services
                 options.Add(new SelectMenuOptionBuilder() { 
                     Label = value,
                     Value = value,
-                    Description = description
-                });
+                    Description = description,
+                    IsDefault = selected == value
+                });;
             } ;
 
             return options;

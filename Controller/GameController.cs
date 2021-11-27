@@ -48,6 +48,9 @@ namespace Controller
                 case string s when s.StartsWith("invite_"):
                     await JoinGame(s[7..], component.User);
                     break;
+                case string s when s.StartsWith("start_"):
+                    await StartGame(s[6..], component.User);
+                    break;
                 case string s when s.StartsWith("cancel_"):
                     await CancelGame(s[7..], component.User);
                     break;
@@ -59,6 +62,13 @@ namespace Controller
             if (u is not SocketGuildUser user) return;
             if (_games.TryGetValue(id, out Game game))
                 await game.Join(user);
+        }
+
+        private static async Task StartGame(string id, SocketUser u)
+        {
+            if (_games.TryGetValue(id, out Game game))
+                if (game.IsCreator(u))
+                    await game.Start();
         }
 
         private static async Task CancelGame(string id, SocketUser u)

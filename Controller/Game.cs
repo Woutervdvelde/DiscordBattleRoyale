@@ -57,7 +57,9 @@ namespace Controller
 
         public async Task Start()
         {
-            await InviteMessage.DeleteAsync();
+            await SettingsMessage?.DeleteAsync();
+            await InviteMessage?.DeleteAsync();
+            await Thread.SendMessageAsync($"{_creator.Username} started the game");
         }
 
         public async Task Cancel()

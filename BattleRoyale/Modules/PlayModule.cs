@@ -37,7 +37,7 @@ namespace BattleRoyale.Modules
                 .WithButton("Cancel", $"cancel_{game.UniqueId}", ButtonStyle.Danger)
                 .WithSelectMenu(
                     $"naming_{game.UniqueId}",
-                    InteractionHandler.ConvertEnumToSelectMenuOptions<GamePlayerNameOptions>(GamePlayerOptions.GamePlayerNameDescriptions),
+                    InteractionHandler.ConvertEnumToSelectMenuOptions<GamePlayerNameOptions>(GamePlayerOptions.GamePlayerNameDescriptions, game.Naming.ToString()),
                     "Naming",
                     1, 1
                 );
