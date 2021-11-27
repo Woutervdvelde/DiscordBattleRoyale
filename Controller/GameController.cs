@@ -40,7 +40,6 @@ namespace Controller
             _games.Add(game.UniqueId, game);
         }
 
-
         public static async Task ParseInteraction(SocketMessageComponent component)
         {
             switch(component.Data.CustomId)
@@ -57,6 +56,5 @@ namespace Controller
             if (_games.TryGetValue(id, out Game game))
                 await game.Join(user);
         }
-
     }
 }

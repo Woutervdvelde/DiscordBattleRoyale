@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model;
 
 namespace Controller
 {
@@ -12,17 +13,25 @@ namespace Controller
     {
         private SocketUser _creator { get; set; }
         private List<SocketUser> _participants { get; set; }
+        private List<string> _names { get; set; }
+        private List<string> _suggestions { get; set; }
+        
         protected internal SocketThreadChannel Thread { get; set; }
         protected internal RestUserMessage InviteMessage { get; set; }
 
         public string UniqueId { get; private set; }
 
+        public GamePlayerNameOptions Naming { get; set; }
+
         public Game (SocketUser creator)
         {
             _creator = creator;
             _participants = new List<SocketUser>();
+            _names = new List<string>();
+            _suggestions = new List<string>();
 
             UniqueId = GenerateUniqueId(creator.Username);
+            Naming = GamePlayerNameOptions.Username;
         }
 
         private string GenerateUniqueId(string user)

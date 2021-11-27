@@ -8,7 +8,7 @@ namespace Model
 {
     public enum GamePlayerNameOptions
     {
-        Username, Nickname, Custom
+        Username, Nickname, //Custom
     }
 
     public class GamePlayerOptions
@@ -19,7 +19,7 @@ namespace Model
                 Dictionary<GamePlayerNameOptions, string> descriptions = new();
                 descriptions.Add(GamePlayerNameOptions.Username, "Players based on joined players usernames");
                 descriptions.Add(GamePlayerNameOptions.Nickname, "Players based on joined players nicknames");
-                descriptions.Add(GamePlayerNameOptions.Custom, "Players based on suggestions made by players (new menu)");
+                //descriptions.Add(GamePlayerNameOptions.Custom, "Players based on suggestions made by players (new menu)");
 
                 return descriptions;
             }
