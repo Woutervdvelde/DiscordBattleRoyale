@@ -26,6 +26,8 @@ namespace Model
             }
         }
 
+        public static Equipment Fists { get => new Equipment("fists", 1, 0, 0, 0); }
+
         public Equipment(string Name, string Killmessage, int Power, int CritChance, int Healing, int Protection)
         {
             this.Name = Name;
@@ -36,6 +38,6 @@ namespace Model
             this.Protection = Protection;
         }
 
-        public Equipment(string Name, int Power, int CritChance, int Healing, int Protection) : this(Name, "", Power, CritChance, Healing, Protection) { }
+        public Equipment(string Name, int Power, int CritChance, int Healing, int Protection) : this(Name, null, Power, CritChance, Healing, Protection) { }
     }
 }

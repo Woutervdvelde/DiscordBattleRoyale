@@ -27,7 +27,7 @@ namespace Model
             {
                 int position = new Random().Next(Count);
                 Equipment equipment = GetAt(position);
-                player.Equipment.Add(equipment);
+                player.Inventory.Add(equipment);
                 player.AddMessage($"found {equipment.Name}.");
                 RemoveAt(position);
             }

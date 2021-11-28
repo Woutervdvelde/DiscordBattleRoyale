@@ -26,6 +26,6 @@ namespace Model
             return randomPlayer;
         }
 
-        public abstract void playerRoam(Player player);
+        public abstract void PlayerRoam(Player player);
     }
 }

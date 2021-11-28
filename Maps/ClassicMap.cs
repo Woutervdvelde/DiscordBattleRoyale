@@ -27,20 +27,18 @@ namespace Maps
                 player.AddMessage("found an empty carepackage.");
         }
 
-        public override void playerRoam(Player player)
+        public override void PlayerRoam(Player player)
         {
             int chance = new Random().Next(0, 13);
 
             if (chance >= 0 && chance < 6)
-                //TODO Fight
-                _ = 0;
+                player.Fight(GetRandomPlayer(player));
             if (chance >= 6 && chance < 9)
                 Loot.PlayerLoot(player);
             if (chance >= 9 && chance < 11)
                 player.Rest();
             if (chance >= 11 && chance < 12)
-                //TODO Ambush
-                _ = 0;
+                player.Ambush(GetRandomPlayer(player));
             if (chance >= 12 && chance < 13)
                 Carepackage(player);
         }

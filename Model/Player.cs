@@ -11,17 +11,19 @@ namespace Model
         public static int MaxHealth = 10;
 
         public string Name { get; set; }
-        public List<Equipment> Equipment { get; set; }
+        public List<Equipment> Inventory { get; set; }
         private int _health { get; set; }
         public int Health { get => _health; set => _health = _health + value <= MaxHealth ? _health += value : _health = MaxHealth ; }
         public int Kills { get; set; }
+        public bool IsAlive { get => _health > 0; }
         public List<string> CurrentMessage { get; set; }
         public Equipment BestFightEquipment { 
             get 
             {
-                Equipment best = Equipment.OrderBy(e => e.Power)?.First();
-                if (best == null || best.Power == 0)
-                    return new Equipment("fists", 1, 0, 0, 0);
+                if (Inventory.Count == 0) return Equipment.Fists;
+                Equipment best = Inventory.OrderBy(e => e.Power)?.First();
+                if (best.Power == 0)
+                    return Equipment.Fists;
                 return best;
             }
         }
@@ -30,7 +32,8 @@ namespace Model
         {
             get
             {
-                Equipment equipment = Equipment.OrderBy(e => e.Healing)?.First();
+                if (Inventory.Count == 0) return null;
+                Equipment equipment = Inventory.OrderBy(e => e.Healing)?.First();
                 if (equipment != null && equipment.Healing > 0)
                     return equipment;
                 else
@@ -41,7 +44,7 @@ namespace Model
         public Player(string name, List<Equipment> equipment)
         {
             Name = name;
-            Equipment = equipment;
+            Inventory = equipment;
             Health = MaxHealth;
             Kills = 0;
             CurrentMessage = new List<string>();
@@ -54,7 +57,7 @@ namespace Model
 
         public void Hurt(int damage)
         {
-            int armor = Equipment.Sum(e => e.Protection);
+            int armor = Inventory.Sum(e => e.Protection);
             Health -= damage;
         }
 
@@ -77,7 +80,47 @@ namespace Model
             Health += equipment.Healing;
             AddMessage($"used {equipment.Name} to heal({equipment.Healing})");
             if (equipment.Protection == 0)
-                Equipment.Remove(equipment);
-        } 
+                Inventory.Remove(equipment);
+        }
+
+        public void Kill(Player b)
+        {
+            Equipment equipment = BestFightEquipment;
+            if (equipment.Killmessage == null)
+                AddMessage($"killed {b.Name}[{b.Health}] using their {equipment.Name}.");
+            else
+                AddMessage("");
+        }
+
+        public void Fight(Player b)
+        {
+            b.Hurt(BestFightEquipment.Damage);
+            if (b.Health <= 0)
+                Kill(b);
+            else
+            {
+                Hurt(b.BestFightEquipment.Damage);
+                if (Health <= 0)
+                    b.Kill(this);
+                else
+                    AddMessage($"and {b.Name}[{b.Health}] fight.");
+            }
+        }
+
+        public void Ambush(Player b)
+        {
+            b.Hurt(BestFightEquipment.Damage);
+            if (b.Health <= 0)
+            {
+                AddMessage($"ambushed and killed {b.Name}[{b.Health}] using their {BestFightEquipment.Name}.");
+                Kills++;
+                b.Inventory.ForEach(e => Inventory.Add(e));
+            }
+            else
+            {
+                AddMessage($"ambushed {b.Name}[{b.Health}");
+            }
+
+        }
     }
 }
