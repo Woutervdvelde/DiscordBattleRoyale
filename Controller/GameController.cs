@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model;
 
 namespace Controller
 {
@@ -54,7 +55,12 @@ namespace Controller
                 case string s when s.StartsWith("cancel_"):
                     await CancelGame(s[7..], component.User);
                     break;
+                case string s when s.StartsWith("naming_"):
+                    await SetNaming(s[7..], component);
+                    break;
             }
+
+            await component.DeferAsync();
         }
 
         private static async Task JoinGame(string id, SocketUser u)
@@ -79,6 +85,17 @@ namespace Controller
                     await game.Cancel();
                     _games.Remove(game.UniqueId);
                 }
+        }
+
+        private static async Task SetNaming(string id, SocketMessageComponent component)
+        {
+            if (_games.TryGetValue(id, out Game game)) 
+            {
+                if (!game.IsCreator(component.User)) return;
+                if (Enum.TryParse(typeof(GamePlayerNameOptions), component.Data.Values.First(), out object option))
+                    if (option is GamePlayerNameOptions value)
+                        game.Naming = value;
+            }
         }
     }
 }

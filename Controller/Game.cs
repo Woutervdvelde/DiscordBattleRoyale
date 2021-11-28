@@ -42,7 +42,7 @@ namespace Controller
 
         public bool IsCreator(SocketUser u)
         {
-            return u.Id == u.Id;
+            return _creator.Id == u.Id;
         }
 
         public async Task Join(SocketGuildUser user)

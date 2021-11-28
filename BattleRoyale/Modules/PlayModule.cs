@@ -43,7 +43,9 @@ namespace BattleRoyale.Modules
                 );
 
             RestUserMessage settingsMessage = await channel.SendMessageAsync(
-                $"Only {Context.User.Username} can manage the game. \n you have access to the following controls",
+                $"║■■■■■■■■■ ADMIN ■■■■■■■■■║\n" +
+                $"Only {Context.User.Username} can manage the game.\n" +
+                $"You have access to the following controls",
                 component: settingsBuilder.Build()
             );
 
@@ -51,7 +53,8 @@ namespace BattleRoyale.Modules
                 .WithButton("Join game", $"invite_{game.UniqueId}");
             
             RestUserMessage inviteMessage = await channel.SendMessageAsync(
-                $"════════════════════════════════════════\n Click on the button to join {Context.User.Username}'s game",
+                $"║■■■■■■■■■ PLAYER ■■■■■■■■■║\n" +
+                $" Click on the button to join {Context.User.Username}'s game",
                 component: inviteBuilder.Build()
             );
             

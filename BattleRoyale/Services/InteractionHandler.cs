@@ -31,13 +31,11 @@ namespace BattleRoyale.Services
 
         private async Task OnButtonExecuted(SocketMessageComponent component)
         {
-            await component.DeferAsync();
             await GameController.ParseInteraction(component);
         }
 
         private async Task OnSelectMenuExecuted(SocketMessageComponent component)
         {
-            await component.DeferAsync();
             await GameController.ParseInteraction(component);
         }
 
