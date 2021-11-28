@@ -54,7 +54,15 @@ namespace BattleRoyale
             if (!command.IsSpecified) return;
             if (result.IsSuccess) return;
 
-            await context.Channel.SendMessageAsync($"error: {result}");
+            switch(result.Error)
+            {
+                case CommandError.UnmetPrecondition:
+                    await context.Channel.SendMessageAsync("You do not have permission to do this");
+                    break;
+                default:
+                    await context.Channel.SendMessageAsync($"error: {result}");
+                    break;
+            }
         }
     }
 }
