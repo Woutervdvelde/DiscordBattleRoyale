@@ -57,9 +57,11 @@ namespace Controller
 
         public async Task Start()
         {
+            await Thread.SendMessageAsync($"{_creator.Username} started the game");
             await SettingsMessage?.DeleteAsync();
             await InviteMessage?.DeleteAsync();
-            await Thread.SendMessageAsync($"{_creator.Username} started the game");
+            GenerateNames();
+            await Thread.SendMessageAsync($"Participants are: ```{string.Join(", ", _names)}```");
         }
 
         public async Task Cancel()
@@ -67,6 +69,19 @@ namespace Controller
             await Thread.DeleteAsync();
             await SettingsMessage?.DeleteAsync();
             await InviteMessage?.DeleteAsync();
+        }
+
+        public void GenerateNames()
+        {
+            switch (Naming)
+            {
+                case GamePlayerNameOptions.Username:
+                    _participants.ForEach(p => _names.Add(p.Username));
+                    break;
+                case GamePlayerNameOptions.Nickname:
+                    _participants.ForEach(p => _names.Add(((SocketGuildUser)p).Nickname));
+                    break;
+            }
         }
     }
 }

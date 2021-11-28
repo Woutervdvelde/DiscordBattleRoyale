@@ -44,7 +44,7 @@ namespace Controller
 
         public static async Task ParseInteraction(SocketMessageComponent component)
         {
-            switch(component.Data.CustomId)
+            switch (component.Data.CustomId)
             {
                 case string s when s.StartsWith("invite_"):
                     await JoinGame(s[7..], component.User);
