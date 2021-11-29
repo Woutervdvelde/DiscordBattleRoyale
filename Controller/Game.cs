@@ -28,6 +28,8 @@ namespace Controller
 
         public GamePlayerNameOptions Naming { get; set; }
 
+        public event GameEventHandler GameFinished;
+
         public Game (SocketUser creator)
         {
             _creator = creator;
@@ -106,6 +108,8 @@ namespace Controller
 
                 foreach (Player player in map.Players)
                 {
+                    if (!player.IsAlive) continue;
+
                     player.CurrentMessage.Clear();
                     map.PlayerRoam(player);
                     player.CurrentMessage.ForEach(m => message.AppendLine(m));
@@ -117,6 +121,7 @@ namespace Controller
                 await Task.Delay(5000);
             }
             await Thread.SendMessageAsync("Game finished");
+            GameFinished?.Invoke(new GameEventArgs(this));
         }
     }
 }

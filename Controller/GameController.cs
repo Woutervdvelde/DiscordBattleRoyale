@@ -39,7 +39,16 @@ namespace Controller
             game.Thread = thread;
             game.SettingsMessage = settingsMessage;
             game.InviteMessage = inviteMessage;
+            game.GameFinished += OnGameFinished;
             _games.Add(game.UniqueId, game);
+        }
+
+        private static void OnGameFinished(GameEventArgs args)
+        {
+            if (!_games.Keys.Contains(args.Game.UniqueId)) return;
+
+           
+            _games.Remove(args.Game.UniqueId);
         }
 
         public static async Task ParseInteraction(SocketMessageComponent component)
