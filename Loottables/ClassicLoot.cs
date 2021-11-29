@@ -13,6 +13,7 @@ namespace Loottables
         {
             Loot = new List<Equipment>
             {
+                              //Name, ?Killmessage, Power, CritChance, Healing, Protection
                 new Equipment("Knife", "{a.Name}[{a.Health}] stabbed {b.Name}[{b.Health}] using their {eq.Name}.", 2, 0, 0, 0),
                 new Equipment("Knife", "{a.Name}[{a.Health}] stabbed {b.Name}[{b.Health}] using their {eq.Name}.", 2, 0, 0, 0),
                 new Equipment("Knife", "{a.Name}[{a.Health}] stabbed {b.Name}[{b.Health}] using their {eq.Name}.", 2, 0, 0, 0),

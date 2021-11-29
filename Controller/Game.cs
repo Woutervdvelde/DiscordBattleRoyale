@@ -94,47 +94,29 @@ namespace Controller
             //Initializing game with classic game stuff
             _map = new ClassicMap(new ClassicLoot());
             _map.Players = _names.Select(p => new Player(p, new List<Equipment>())).ToList();
-            await PlayGame();
+            _ = PlayGame(_map);
         }
 
-        private async Task PlayGame()
+        private async Task PlayGame(Map map)
         {
 
-            while (_map.LivingPlayers.Count > 1) //as long as there are players alive
+            while (map.LivingPlayers.Count > 1) //as long as there are players alive
             {
                 StringBuilder message = new StringBuilder();
 
-                _map.Players.ForEach(p =>
+                foreach (Player player in map.Players)
                 {
-                    p.CurrentMessage.Clear();
-                    _map.PlayerRoam(p);
-                    _map.Players[0].CurrentMessage.ForEach(m => message.AppendLine(m));
-                });
+                    player.CurrentMessage.Clear();
+                    map.PlayerRoam(player);
+                    player.CurrentMessage.ForEach(m => message.AppendLine(m));
+                }
 
-                _map.RoundCount++;
-                var embed = new EmbedBuilder() { Title = $"Round {_map.RoundCount}", Description = message.ToString() };
+                map.RoundCount++;
+                var embed = new EmbedBuilder() { Title = $"Round {map.RoundCount}", Description = message.ToString() };
                 await Thread.SendMessageAsync(embed: embed.Build());
                 await Task.Delay(5000);
             }
             await Thread.SendMessageAsync("Game finished");
-
-            /** OUTPUT from 3 rounds
-             * 
-             * ROUND 1
-             * players[0].Health = 10;
-             * yeah testing...
-             * 
-             * ROUND2
-             * players[0].Health = 10;
-             * yeah testing...
-             * yeah testing...
-             * 
-             * ROUND 3
-             * players[0].Health = 10;
-             * yeah testing...
-             * yeah testing...
-             * yeah testing...
-             */
         }
     }
 }

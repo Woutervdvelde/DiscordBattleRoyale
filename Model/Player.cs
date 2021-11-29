@@ -14,7 +14,7 @@ namespace Model
         public List<Equipment> Inventory { get; set; }
         private int _health { get; set; }
         //Calculate health doesn't work correctly
-        public int Health { get => _health; set => _health = value > MaxHealth ? value : MaxHealth; }
+        public int Health { get => _health; set => _health = value < MaxHealth ? value : MaxHealth; }
         public int Kills { get; set; }
         public bool IsAlive { get => _health > 0; }
         public List<string> CurrentMessage { get; set; }
@@ -90,7 +90,13 @@ namespace Model
             if (equipment.Killmessage == null)
                 AddMessage($"killed {b.Name}[{b.Health}] using their {equipment.Name}.");
             else
-                AddMessage("");
+                AddMessage(equipment.Killmessage
+                    .Replace("{a.Name}", Name)
+                    .Replace("{b.Name}", b.Name)
+                    .Replace("{a.Health}", Health.ToString())
+                    .Replace("{b.Health}", b.Health.ToString())
+                    .Replace("{eq.Name}", equipment.Name)
+                );
         }
 
         public void Fight(Player b)
@@ -119,7 +125,7 @@ namespace Model
             }
             else
             {
-                AddMessage($"ambushed {b.Name}[{b.Health}");
+                AddMessage($"ambushed {b.Name}[{b.Health}]");
             }
 
         }
