@@ -13,7 +13,8 @@ namespace Model
         public string Name { get; set; }
         public List<Equipment> Inventory { get; set; }
         private int _health { get; set; }
-        public int Health { get => _health; set => _health = _health + value <= MaxHealth ? _health += value : _health = MaxHealth ; }
+        //Calculate health doesn't work correctly
+        public int Health { get => _health; set => _health = value > MaxHealth ? value : MaxHealth; }
         public int Kills { get; set; }
         public bool IsAlive { get => _health > 0; }
         public List<string> CurrentMessage { get; set; }
