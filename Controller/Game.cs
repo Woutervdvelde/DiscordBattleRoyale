@@ -78,6 +78,13 @@ namespace Controller
             await InviteMessage?.DeleteAsync();
         }
 
+        public async Task Close()
+        {
+            await Thread.SendMessageAsync("Game finished");
+            GameFinished?.Invoke(new GameEventArgs(this));
+            GameFinished = null;
+        }
+
         public void GenerateNames()
         {
             switch (Naming)
@@ -102,7 +109,7 @@ namespace Controller
         private async Task PlayGame(Map map)
         {
 
-            while (map.LivingPlayers.Count > 1) //as long as there are players alive
+            while (true)
             {
                 StringBuilder message = new StringBuilder();
 
@@ -118,10 +125,12 @@ namespace Controller
                 map.RoundCount++;
                 var embed = new EmbedBuilder() { Title = $"Round {map.RoundCount}", Description = message.ToString() };
                 await Thread.SendMessageAsync(embed: embed.Build());
-                await Task.Delay(5000);
+
+                if (map.LivingPlayers.Count > 1)
+                    await Task.Delay(5000);
+                else break;
             }
-            await Thread.SendMessageAsync("Game finished");
-            GameFinished?.Invoke(new GameEventArgs(this));
+            await Close();
         }
     }
 }
