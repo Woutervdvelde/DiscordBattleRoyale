@@ -9,6 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Loottables\Loottables.csproj" />
+    <ProjectReference Include="..\Maps\Maps.csproj" />
     <ProjectReference Include="..\Model\Model.csproj" />
   </ItemGroup>
 

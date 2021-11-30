@@ -5,7 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Maps;
 using Model;
+using Loottables;
+using Discord;
 
 namespace Controller
 {
@@ -13,6 +16,7 @@ namespace Controller
     {
         private SocketUser _creator { get; set; }
         private List<SocketUser> _participants { get; set; }
+        private Map _map { get; set; }
         private List<string> _names { get; set; }
         private List<string> _suggestions { get; set; }
         
@@ -23,6 +27,8 @@ namespace Controller
         public string UniqueId { get; private set; }
 
         public GamePlayerNameOptions Naming { get; set; }
+
+        public event GameEventHandler GameFinished;
 
         public Game (SocketUser creator)
         {
@@ -62,6 +68,7 @@ namespace Controller
             await InviteMessage?.DeleteAsync();
             GenerateNames();
             await Thread.SendMessageAsync($"Participants are: ```{string.Join(", ", _names)}```");
+            await InitializeGame();
         }
 
         public async Task Cancel()
@@ -82,6 +89,39 @@ namespace Controller
                     _participants.ForEach(p => _names.Add(((SocketGuildUser)p).Nickname));
                     break;
             }
+        }
+
+        private async Task InitializeGame()
+        {
+            //Initializing game with classic game stuff
+            _map = new ClassicMap(new ClassicLoot());
+            _map.Players = _names.Select(p => new Player(p, new List<Equipment>())).ToList();
+            _ = PlayGame(_map);
+        }
+
+        private async Task PlayGame(Map map)
+        {
+
+            while (map.LivingPlayers.Count > 1) //as long as there are players alive
+            {
+                StringBuilder message = new StringBuilder();
+
+                foreach (Player player in map.Players)
+                {
+                    if (!player.IsAlive) continue;
+
+                    player.CurrentMessage.Clear();
+                    map.PlayerRoam(player);
+                    player.CurrentMessage.ForEach(m => message.AppendLine(m));
+                }
+
+                map.RoundCount++;
+                var embed = new EmbedBuilder() { Title = $"Round {map.RoundCount}", Description = message.ToString() };
+                await Thread.SendMessageAsync(embed: embed.Build());
+                await Task.Delay(5000);
+            }
+            await Thread.SendMessageAsync("Game finished");
+            GameFinished?.Invoke(new GameEventArgs(this));
         }
     }
 }
