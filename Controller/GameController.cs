@@ -47,7 +47,6 @@ namespace Controller
         {
             if (!_games.Keys.Contains(args.Game.UniqueId)) return;
 
-           
             _games.Remove(args.Game.UniqueId);
         }
 
