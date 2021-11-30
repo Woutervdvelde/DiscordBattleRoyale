@@ -21,7 +21,7 @@ namespace Model
             get 
             {
                 if (Inventory.Count == 0) return Equipment.Fists;
-                Equipment best = Inventory.OrderBy(e => e.Power)?.First();
+                Equipment best = Inventory.OrderByDescending(e => e.Power)?.First();
                 if (best.Power == 0)
                     return Equipment.Fists;
                 return best;
