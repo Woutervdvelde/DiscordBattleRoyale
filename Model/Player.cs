@@ -17,6 +17,7 @@ namespace Model
         public int Kills { get; set; }
         public bool IsAlive { get => _health > 0; }
         public List<string> CurrentMessage { get; set; }
+        public string DisplayName { get => $"{Name}[{Health}]"; }
         public Equipment BestFightEquipment { 
             get 
             {
@@ -52,7 +53,7 @@ namespace Model
 
         public void AddMessage(string message)
         {
-            CurrentMessage.Add($"{Name}[{Health}] {message}");
+            CurrentMessage.Add($"{DisplayName} {message}");
         }
 
         public void Hurt(int damage)
@@ -87,14 +88,11 @@ namespace Model
         {
             Equipment equipment = BestFightEquipment;
             if (equipment.Killmessage == null)
-                AddMessage($"killed {b.Name}[{b.Health}] using their {equipment.Name}.");
+                AddMessage($"killed {b.DisplayName} using their {equipment.Name}.");
             else
                 AddMessage(equipment.Killmessage
-                    .Replace("{a.Name}", Name)
-                    .Replace("{b.Name}", b.Name)
-                    .Replace("{a.Health}", Health.ToString())
-                    .Replace("{b.Health}", b.Health.ToString())
-                    .Replace("{eq.Name}", equipment.Name)
+                    .Replace("{b}", b.DisplayName)
+                    .Replace("{equipment}", equipment.Name)
                 );
         }
 
