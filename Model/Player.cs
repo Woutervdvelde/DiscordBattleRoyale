@@ -64,7 +64,7 @@ namespace Model
 
         public void Rest()
         {
-            if (Health < 10)
+            if (Health < MaxHealth)
             {
                 Equipment equipment = BestConsumableEquipment;
                 if (equipment != null)
