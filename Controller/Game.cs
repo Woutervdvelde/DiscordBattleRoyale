@@ -19,6 +19,8 @@ namespace Controller
         private Map _map { get; set; }
         private List<string> _names { get; set; }
         private List<string> _suggestions { get; set; }
+
+        public bool IsReady { get => _participants.Count > 1; }
         
         protected internal SocketThreadChannel Thread { get; set; }
         protected internal RestUserMessage SettingsMessage { get; set; }
@@ -49,6 +51,11 @@ namespace Controller
         public bool IsCreator(SocketUser u)
         {
             return _creator.Id == u.Id;
+        }
+
+        public bool HasParticipant(SocketUser u)
+        {
+            return _participants.Where(su => su.Id == u.Id).Count() > 0;
         }
 
         public async Task Join(SocketGuildUser user)
