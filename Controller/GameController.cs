@@ -74,15 +74,17 @@ namespace Controller
         private static async Task JoinGame(string id, SocketUser u)
         {
             if (u is not SocketGuildUser user) return;
-            if (_games.TryGetValue(id, out Game game))
-                await game.Join(user);
+                if (_games.TryGetValue(id, out Game game))
+                    if (!game.HasParticipant(u))
+                        await game.Join(user);
         }
 
         private static async Task StartGame(string id, SocketUser u)
         {
             if (_games.TryGetValue(id, out Game game))
                 if (game.IsCreator(u))
-                    await game.Start();
+                    if (game.IsReady)
+                        await game.Start();
         }
 
         private static async Task CancelGame(string id, SocketUser u)

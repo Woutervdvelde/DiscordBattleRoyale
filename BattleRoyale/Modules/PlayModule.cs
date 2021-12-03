@@ -45,7 +45,7 @@ namespace BattleRoyale.Modules
             RestUserMessage settingsMessage = await channel.SendMessageAsync(
                 $"║■■■■■■■■■ ADMIN ■■■■■■■■■║\n" +
                 $"Only {Context.User.Username} can manage the game.\n" +
-                $"You have access to the following controls",
+                $"You have access to the following controls\n",
                 component: settingsBuilder.Build()
             );
 
