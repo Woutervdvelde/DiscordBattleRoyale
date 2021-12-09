@@ -15,12 +15,15 @@ namespace Controller
     public class Game
     {
         private SocketUser _creator { get; set; }
+        public SocketUser Creator { get => _creator; }
         private List<SocketUser> _participants { get; set; }
-        private Map _map { get; set; }
         private List<string> _names { get; set; }
-        private List<string> _suggestions { get; set; }
+        private Map _map { get; set; }
 
-        public bool IsReady { get => _participants.Count > 1; }
+        public List<string> ChosenSuggestions { get; set; }
+        public List<string> Suggestions { get; set; }
+        public bool IsStarted { get; set; }
+        public bool IsReady { get => _participants.Count > 1 || ChosenSuggestions.Count > 1; }
         
         protected internal SocketThreadChannel Thread { get; set; }
         protected internal RestUserMessage SettingsMessage { get; set; }
@@ -35,10 +38,13 @@ namespace Controller
         public Game (SocketUser creator)
         {
             _creator = creator;
+
             _participants = new List<SocketUser>();
             _names = new List<string>();
-            _suggestions = new List<string>();
 
+            ChosenSuggestions = new List<string>();
+            Suggestions = new List<string>();
+            IsStarted = false;
             UniqueId = GenerateUniqueId(creator.Username);
             Naming = GamePlayerNameOptions.Username;
         }
@@ -70,6 +76,7 @@ namespace Controller
 
         public async Task Start()
         {
+            IsStarted = true;
             await Thread.SendMessageAsync($"{_creator.Username} started the game");
             await SettingsMessage?.DeleteAsync();
             await InviteMessage?.DeleteAsync();
@@ -101,6 +108,9 @@ namespace Controller
                     break;
                 case GamePlayerNameOptions.Nickname:
                     _participants.ForEach(p => _names.Add(((SocketGuildUser)p).Nickname));
+                    break;
+                case GamePlayerNameOptions.Custom:
+                    ChosenSuggestions.ForEach(s => _names.Add(s));
                     break;
             }
         }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Controller;
 
 namespace BattleRoyale
 {
@@ -37,6 +38,8 @@ namespace BattleRoyale
         {
             var message = messageParam as SocketUserMessage;
             if (message == null) return;
+
+            await GameController.CheckMessage(message);
 
             int argPos = 0;
             if (!(message.HasStringPrefix(_prefix, ref argPos) ||

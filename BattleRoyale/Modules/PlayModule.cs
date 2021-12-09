@@ -31,32 +31,8 @@ namespace BattleRoyale.Modules
             SocketThreadChannel thread = await TryCreateThread(channel, game);
             if (thread == null) return;
 
-
-            var settingsBuilder = new ComponentBuilder()
-                .WithButton("Start", $"start_{game.UniqueId}")
-                .WithButton("Cancel", $"cancel_{game.UniqueId}", ButtonStyle.Danger)
-                .WithSelectMenu(
-                    $"naming_{game.UniqueId}",
-                    InteractionHandler.ConvertEnumToSelectMenuOptions<GamePlayerNameOptions>(GamePlayerOptions.GamePlayerNameDescriptions, game.Naming.ToString()),
-                    "Naming",
-                    1, 1
-                );
-
-            RestUserMessage settingsMessage = await channel.SendMessageAsync(
-                $"║■■■■■■■■■ ADMIN ■■■■■■■■■║\n" +
-                $"Only {Context.User.Username} can manage the game.\n" +
-                $"You have access to the following controls\n",
-                component: settingsBuilder.Build()
-            );
-
-            var inviteBuilder = new Discord.ComponentBuilder()
-                .WithButton("Join game", $"invite_{game.UniqueId}");
-            
-            RestUserMessage inviteMessage = await channel.SendMessageAsync(
-                $"║■■■■■■■■■ PLAYER ■■■■■■■■■║\n" +
-                $" Click on the button to join {Context.User.Username}'s game",
-                component: inviteBuilder.Build()
-            );
+            RestUserMessage settingsMessage = await GameController.SendAdminMessage(channel, game);
+            RestUserMessage inviteMessage = await GameController.SendInviteMessage(channel, game);
             
             GameController.CreateGame(game, thread, settingsMessage, inviteMessage);
         }
